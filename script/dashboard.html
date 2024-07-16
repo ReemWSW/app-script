@@ -1,0 +1,194 @@
+<script>
+  function loadCounts() {
+    google.script.run.withSuccessHandler(displayCounts).getCount();
+  }
+
+  function loadEvaluationData() {
+    google.script.run.withSuccessHandler(renderChart).getEvaluationData();
+  }
+
+  function loadProblemCharData() {
+    google.script.run.withSuccessHandler(renderProblemChart).getCountProblems();
+  }
+  function loadProblemData() {
+    google.script.run.withSuccessHandler(renderProblemTable).getProblemsData();
+  }
+
+  function loadTeachers() {
+    google.script.run.withSuccessHandler(renderTeachersChart).getUniqueTeachersWithCount();
+  }
+
+function prepareChartData(teachersCount) {
+  const counts = Object.keys(teachersCount);
+  const teacherLengths = counts.map(count => teachersCount[count].length);
+  return { counts, teacherLengths };
+}
+
+  function renderTeachersChart(teachers) {
+    var teachersCount = teachers["teachersCountInverted"];
+  const counts = Object.keys(teachersCount);
+  const teacherLengths = counts.map(count => teachersCount[count].length);
+
+  if (document.getElementById('teacher-chart')) {
+    const ctx = document.getElementById('teacher-chart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: counts,
+        datasets: [{
+          label: 'จำนวนครูออกนอเทศก์นักศึกษาฝึกอาชีพ',
+          data: teacherLengths,
+          backgroundColor: 'rgb(56, 193, 170)',
+        }],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'จำนวนครั้งที่ออกนอเทศ',
+            },
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'จำนวนครู',
+            },
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+  }
+}
+
+
+  function displayCounts(counts) {
+    document.getElementById('student-count').innerHTML = counts.student;
+    document.getElementById('teacher-count').innerHTML = counts.teacher;
+    document.getElementById('estab-count').innerHTML = counts.estab;
+  }
+
+  function renderChart(data) {
+    if (document.getElementById('elevate-chart')) {
+      const ctx = document.getElementById('elevate-chart').getContext('2d');
+
+      const colorbar = ["rgb(56, 48, 127)"];
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.labels,
+          datasets: [
+            {
+              label : "ประเมินผลการปฏิบัติงาน",
+              borderColor: colorbar,
+              backgroundColor: colorbar,
+              data: data.averages,
+              barPercentage: 0.8,
+              categoryPercentage: 0.8,
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          elements: {
+            line: {
+              tension: 0.4,
+            },
+          },
+          scales: {
+            y: {
+              grid: {
+                display: true,
+                drawOnChartArea: true,
+                drawTicks: false,
+              },
+              beginAtZero: true
+            },
+          },
+        },
+      });
+    }
+  }
+
+  function renderProblemChart(problemData) {
+    // นับจำนวนของแต่ละประเภทของปัญหา
+    var rows = document.querySelectorAll('tbody tr');
+    rows.forEach(function (row) {
+      var cellValue = row.querySelector('td').innerText.trim();
+      if (cellValue === "พบปัญหา") {
+        problemData[1].count++;
+      } else {
+        problemData[0].count++;
+      }
+    });
+
+    // เตรียมข้อมูลสำหรับแสดงในแผนภูมิแท่ง
+    var labels = problemData.map(function (data) {
+      return data.type;
+    });
+    var counts = problemData.map(function (data) {
+      return data.count;
+    });
+
+    // สร้างแผนภูมิพาย
+    var ctx = document.getElementById('problem-chart').getContext('2d');
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'จำนวนของปัญหา',
+          data: counts,
+          backgroundColor: [
+            'rgba(54, 162, 235, 0.5)', // สีสำหรับประเภท "ไม่พบปัญหา"
+            'rgba(255, 99, 132, 0.5)'   // สีสำหรับประเภท "พบปัญหา"
+          ],
+          borderColor: [
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 99, 132, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+
+  function renderProblemTable(problems) {
+    var problemsData = problems;
+   var tableBody = document.getElementById('problem-table').getElementsByTagName('tbody')[0];
+
+    for (var problem in problemsData) {
+      var problemCount = problemsData[problem];
+
+      var row = document.createElement('tr');
+      var problemCell = document.createElement('td');
+      var countCell = document.createElement('td');
+
+      problemCell.textContent = problem;
+      countCell.textContent = problemCount;
+
+      row.appendChild(problemCell);
+      row.appendChild(countCell);
+
+      tableBody.appendChild(row);
+    }
+  }
+
+  window.onload = () => {
+    loadEvaluationData();
+    loadCounts();
+    loadProblemCharData();
+    loadProblemData();
+    loadTeachers();
+  };
+
+</script>

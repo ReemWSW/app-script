@@ -1,0 +1,24 @@
+<script>
+  function loadAverages() {
+        google.script.run.withSuccessHandler(displayAverages).getAverages();
+      }
+
+      function displayAverages(averages) {
+        var avgArray = JSON.parse(averages);
+
+        if (!avgArray || avgArray.length === 0) {
+          document.getElementById('averages').innerHTML = 'No data available';
+          return;
+        }
+
+        var output = '';
+        var headers = ["ตรงต่อเวลา/ขยันอดทน", "การปฏิบัติตามคำสั่ง คำแนะนำ ของครูฝึก", "การปฏิบัติตามกฎระเบียบของสถานประกอบการ", "กิริยามารยาทสภาพเรียบร้อย", "บำรุงรักษาเครื่องมือเครื่องใช้ และทรัพย์สินขององค์กร", "เรียนรู้และพัฒนาตนเองอยู่เสมอ"];
+
+        for (var i = 0; i < avgArray.length; i++) {
+          output += '<p>' + headers[i] + ': ' + avgArray[i].toFixed(2) + '</p>';
+        }
+        document.getElementById('averages').innerHTML = output;
+      }
+
+      window.onload = loadAverages;
+</script>

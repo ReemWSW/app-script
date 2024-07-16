@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <base target="_top">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.4.47/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/themify-icons/0.1.2/css/themify-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400&display=swap" rel="stylesheet">
+
+  <?!= include("css/style.html"); ?>
+</head>
+
+<body>
+
+  <div class="container-scroller">
+    <?!= include("components/navbar.html"); ?>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- ---------------------------------this is sidebar --------------------------------- -->
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+          <li class="nav-item nav-profile">
+            <a href="https://ibb.co/W2h5NmH" class="nav-link">
+              <img src="https://i.ibb.co/W2h5NmH/299130150-724500325308401-9179084289853092033-n.jpg" alt="profile"
+                border="0">
+            </a>
+          </li>
+          <li class="nav-item">
+            <?var url = getScriptUrl();?>
+            <a class="nav-link" href='<?=url?>?page=index'>
+              <span class="menu-title">หน้าหลัก</span>
+              <i class="mdi mdi-home menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <?var url = getScriptUrl();?>
+            <a class="nav-link" href='<?=url?>?page=pages/teacher'>
+              <span class="menu-title">คุณครู</span>
+              <i class="mdi mdi-account-multiple menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <?var url = getScriptUrl();?>
+            <a class="nav-link" href='<?=url?>?page=pages/company'>
+              <span class="menu-title">สถานประกอบการ</span>
+              <i class="mdi mdi-factory menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link"
+              href="https://drive.google.com/drive/folders/1M1ZbmCd6sdAkkvhraDHASVkfnHorh0NWkuooT2el5RVefRlOE97w2spvp8jsPij8n9LkNRWp?usp=sharing">
+              <span class="menu-title">ดูรูปภาพ</span>
+              <i class="mdi mdi-image menu-icon"></i>
+            </a>
+          </li>
+
+        </ul>
+      </nav>
+      <!-- ---------------------------------end sidebar --------------------------------- -->
+      <!-- ---------------------------------main content --------------------------------- -->
+
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <?!= include("components/cardheader.html"); ?>
+          <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <div class="clearfix">
+                    <h4 class="card-title float-start">ประเมินผลการปฏิบัติงาน</h4>
+                    <div id="elevate-chart-legend" class="rounded-legend legend-horizontal legend-top-right float-end">
+                    </div>
+                  </div>
+                  <canvas id="elevate-chart" class="mt-4"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <div class="clearfix">
+                    <h4 class="card-title float-start">จำนวนครูออกนอเทศก์นักศึกษาฝึกอาชีพ</h4>
+                    <div id="teacher-chart-legend" class="rounded-legend legend-horizontal legend-top-right float-end">
+                    </div>
+                  </div>
+                  <canvas id="teacher-chart" class="mt-4"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">นักศึกษาฝึกอาชีพมีปัญหา</h4>
+                  <div class="doughnutjs-wrapper d-flex justify-content-center">
+                    <canvas id="problem-chart"></canvas>
+                  </div>
+                  <div id="problem-chart-legend" class="rounded-legend legend-vertical legend-bottom-left pt-4"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-8 grid-margin">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">ปัญหาที่พบ</h4>
+                  <div class="table-responsive">
+                    <table id="problem-table" class="table problem-table">
+                      <thead>
+                        <tr>
+                          <th> ปัญหา </th>
+                          <th> จำนวน </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- content-wrapper ends -->
+        </div>
+        <!-- ---------------------------------main content --------------------------------- -->
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.0.1/chart.umd.min.js"></script>
+
+  </div>
+  <?!= include("script/misc.html"); ?>
+  <?!= include("script/canvas.html"); ?>
+  <?!= include("script/setting.html"); ?>
+  <?!= include("script/dashboard"); ?>
+
+</body>
+
+</html>

@@ -1,0 +1,52 @@
+<script>
+    function loadData() {
+        $('#loadingSpinner').show();
+        google.script.run.withSuccessHandler(function (data) {
+            $("#loadingSpinner").hide();
+            console.log(data)
+            if (!data || Object.keys(data).length === 0) {
+                console.error("Loading Data is not valid.");
+                return;
+            }
+
+            var table = $('#compTable').DataTable();
+            table.clear();
+
+            Object.keys(data).forEach(function (key) {
+                let studentDetails = JSON.stringify(data[key].students);
+                let buttonHtml = `<button class="btn btn-primary" onclick='showStudentDetails(${studentDetails});'>ดูนักเรียน</button>`;
+                table.row.add([key, data[key].name, data[key].count, buttonHtml]);
+            });
+            table.draw();
+        }).getEslab();
+    }
+    function showStudentDetails(comp) {
+        if (!comp || comp.length === 0) {
+            console.log("ไม่มีข้อมูลนักเรียนสำหรับรหัสสถานประกอบการที่ระบุ");
+            return;
+        }
+
+
+        var table = $('#studentDetailsTable').DataTable();
+        table.clear();
+        comp.forEach(function (student) {
+            console.log(student);
+            table.row.add([
+                student.name, 
+                student.id, 
+                student.field, 
+                student.level, 
+                student.count, 
+                student.teacher
+            ]);
+        });
+        table.draw();
+
+        $('#studentModal').modal('show'); // แสดง Modal เพื่อแสดงข้อมูลนักเรียน
+    }
+    $(document).ready(function () {
+        $('#compTable').DataTable();
+        $('#studentTable').DataTable();
+        loadData();
+    });
+</script>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <base target="_top">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.4.47/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/themify-icons/0.1.2/css/themify-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+
+  <?!= include("css/style.html"); ?>
+</head>
+
+<body>
+
+  <div class="container-scroller">
+    <?!= include("components/navbar.html"); ?>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- ---------------------------------this is sidebar --------------------------------- -->
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+          <li class="nav-item nav-profile">
+            <a href="https://ibb.co/W2h5NmH" class="nav-link">
+              <img src="https://i.ibb.co/W2h5NmH/299130150-724500325308401-9179084289853092033-n.jpg" alt="profile"
+                border="0">
+            </a>
+          </li>
+          <li class="nav-item">
+            <?var url = getScriptUrl();?>
+            <a class="nav-link" href='<?=url?>?page=index'>
+              <span class="menu-title">หน้าหลัก</span>
+              <i class="mdi mdi-home menu-icon"></i>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <?var url = getScriptUrl();?>
+            <a class="nav-link" href='<?=url?>?page=page/teacher'>
+              <span class="menu-title">คุณครู</span>
+              <i class="mdi mdi-account-multiple menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <?var url = getScriptUrl();?>
+            <a class="nav-link" href='<?=url?>?page=page/company'>
+              <span class="menu-title">สถานประกอบการ</span>
+              <i class="mdi mdi-factory menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link"
+              href="https://drive.google.com/drive/folders/1M1ZbmCd6sdAkkvhraDHASVkfnHorh0NWkuooT2el5RVefRlOE97w2spvp8jsPij8n9LkNRWp?usp=sharing">
+              <span class="menu-title">ดูรูปภาพ</span>
+              <i class="mdi mdi-image menu-icon"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- ---------------------------------end sidebar --------------------------------- -->
+      <!-- ---------------------------------main content --------------------------------- -->
+
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <h3 class="page-title">ข้อมูลการนิเทศก์ฝึกงาน</h3>
+          </div>
+          <div class="grid-margin">
+            <div class="card">
+              <div class="card-body">
+                <div id="loadingSpinner" class="spinner-border" role="status" style="display:none;">
+                  <span class="sr-only">Loading...</span>
+                </div>
+                <table id="mentorTable" class="display">
+                  <thead>
+                    <tr>
+                      <th>ครูนิเทศ</th>
+                      <th>จำนวนครั้งที่ออกนิเทศ</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+
+                <div id="studentModal" class="modal" tabindex="-1" role="dialog">
+                  <div class="modal-dialog modal-fullscreen" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">รายชื่อนักเรียน</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <div id="modalLoadingSpinner" class="spinner-border" role="status" style="display:none;">
+                          <span class="sr-only">กำลังโหลด...</span>
+                        </div>
+                        <table id="studentDetailsTable" class="display">
+                          <thead>
+                            <tr>
+                              <th>ชื่อนักเรียน นักศึกษา</th>
+                              <th>รหัสประจำตัวนักเรียน นักศึกษา</th>
+                              <th>สาขาวิชา</th>
+                              <th>ระดับการศึกษา</th>
+                              <th>จำนวนครั้งที่ออกนิเทศ</th>
+                              <!-- Add other columns as needed -->
+                            </tr>
+                          </thead>
+                          <tbody>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ---------------------------------main content --------------------------------- -->
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.0.1/chart.umd.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js">
+  </script>
+
+  <?!= include("script/misc.html"); ?>
+  <?!= include("script/canvas.html"); ?>
+  <?!= include("script/setting.html"); ?>
+  <?!= include("script/teacher.html"); ?>
+
+</body>
+
+</html>
