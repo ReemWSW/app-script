@@ -26,29 +26,40 @@ function getCount() {
   }
 }
 
-function getDataDashboard() {
+function getDataEval() {
   const data = getSheetData("dashboard");
 
   // Separate the header row (assuming headers are in the first row)
   const headers = data.shift();
 
-  // Access data without headers
-  const dataWithoutHeaders = data;
-
   // Access specific data point using column name (assuming headers exist)
   const scoreIndex = headers.indexOf("คะแนน");
   const nameIndex = headers.indexOf("ประเมินผลการปฏิบัติงาน");
-
-  if (nameIndex > -1) {
-    const nameValues = dataWithoutHeaders.map((row) => row[nameIndex]);
-    const scoreValues = dataWithoutHeaders.map((row) => row[scoreIndex]);
-    return {
-      labels: nameValues,
-      averages: scoreValues,
-    };
-  } else {
-    console.error("Header 'Name' not found");
+  // Ensure the necessary columns exist
+  if (scoreIndex === -1 || nameIndex === -1) {
+    console.error(
+      "Required headers 'คะแนน' or 'ประเมินผลการปฏิบัติงาน' not found"
+    );
+    return null;
   }
+
+  // Access data without headers
+  const dataWithoutHeaders = data;
+
+  // Filter out rows where the problem value is empty or null
+  const filteredData = dataWithoutHeaders.filter((row) => row[nameIndex]);
+
+  const nameValues = filteredData.map((row) => row[nameIndex]);
+  const scoreValues = filteredData.map((row) => row[scoreIndex]);
+  console.log({
+    labels: nameValues,
+    averages: scoreValues,
+  })
+
+  return {
+    labels: nameValues,
+    averages: scoreValues,
+  };
 }
 
 function getTeacherIntern() {
@@ -169,11 +180,11 @@ function getProblemsData() {
   const dataWithoutHeaders = data;
 
   // Filter out rows where the problem value is empty or null
-  const filteredData = dataWithoutHeaders.filter(row => row[problemIndex]);
+  const filteredData = dataWithoutHeaders.filter((row) => row[problemIndex]);
 
   // Create an object with problems as keys and counts as values
   const problemsData = {};
-  filteredData.forEach(row => {
+  filteredData.forEach((row) => {
     const problem = row[problemIndex];
     const count = row[problemCountIndex];
     problemsData[problem] = count;
