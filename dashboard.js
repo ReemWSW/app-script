@@ -1,4 +1,3 @@
-
 //------------------------------------ Get Data Unique --------------------------
 
 // Get teacher data
@@ -34,7 +33,12 @@ function getUniqueTeachersWithCount() {
   // Calculate the number of unique teachers by counting the keys in teachersCount
   var uniqueTeacherCount = Object.keys(teachersCount).length;
   // Return an object containing both the total count and the unique teacher count
-  return { totalTeachers: data.length - 1, uniqueTeachers: uniqueTeacherCount, teachersCount: teachersCount, teachersCountInverted: teachersCountInverted };
+  return {
+    totalTeachers: data.length - 1,
+    uniqueTeachers: uniqueTeacherCount,
+    teachersCount: teachersCount,
+    teachersCountInverted: teachersCountInverted,
+  };
 }
 
 // Get student data
@@ -42,7 +46,8 @@ function getUniqueStudents() {
   var data = getSheetData();
 
   var studebtSet = new Set();
-  for (var row = 1; row < data.length; row++) { // เริ่มที่ row 1 เนื่องจาก row 0 เป็น header
+  for (var row = 1; row < data.length; row++) {
+    // เริ่มที่ row 1 เนื่องจาก row 0 เป็น header
     var studentId = data[row][3];
     if (studentId) {
       studebtSet.add(studentId);
@@ -51,13 +56,13 @@ function getUniqueStudents() {
   return studebtSet.size;
 }
 
-
 // Get Establishments data
 function getUniqueEstabs() {
   var data = getSheetData();
 
   var estabSet = new Set();
-  for (var row = 1; row < data.length; row++) { // เริ่มที่ row 1 เนื่องจาก row 0 เป็น header
+  for (var row = 1; row < data.length; row++) {
+    // เริ่มที่ row 1 เนื่องจาก row 0 เป็น header
     var estabName = data[row][7]; // สมมติว่าชื่อครูนิเทศอยู่ในคอลัมน์แรก
     if (estabName) {
       estabSet.add(estabName);
@@ -72,24 +77,24 @@ function getCount() {
   var estab = getUniqueEstabs();
 
   return {
-    "student": student,
-    "teacher": teacher["uniqueTeachers"],
-    "estab": estab
-  }
+    student: student,
+    teacher: teacher["uniqueTeachers"],
+    estab: estab,
+  };
 }
 
 // ------------------------------------------------------------------------------------------
 
-// Function to Calculate Average Evaluation 
+// Function to Calculate Average Evaluation
 function getEvaluationData() {
   var data = getSheetData();
   var evaluations = [
-    'ตรงต่อเวลา/ขยันอดทน',
-    'การปฏิบัติตามคำสั่ง คำแนะนำ ของครูฝึก',
-    'การปฏิบัติตามกฎระเบียบของสถานประกอบการ',
-    'กิริยามารยาทสภาพเรียบร้อย',
-    'บำรุงรักษาเครื่องมือเครื่องใช้ และทรัพย์สินขององค์กร',
-    'เรียนรู้และพัฒนาตนเองอยู่เสมอ'
+    "ตรงต่อเวลา/ขยันอดทน",
+    "การปฏิบัติตามคำสั่ง คำแนะนำ ของครูฝึก",
+    "การปฏิบัติตามกฎระเบียบของสถานประกอบการ",
+    "กิริยามารยาทสภาพเรียบร้อย",
+    "บำรุงรักษาเครื่องมือเครื่องใช้ และทรัพย์สินขององค์กร",
+    "เรียนรู้และพัฒนาตนเองอยู่เสมอ",
   ];
   var averages = [];
   var startCol = 10; // คอลัมน์ที่เริ่มต้นการประเมิน (ตรงต่อเวลา/ขยันอดทน)
@@ -98,9 +103,11 @@ function getEvaluationData() {
   for (var col = startCol; col <= endCol; col++) {
     var sum = 0;
     var count = 0;
-    for (var row = 1; row < data.length; row++) { // เริ่มต้นที่ row 1 เนื่องจาก row 0 เป็น header
+    for (var row = 1; row < data.length; row++) {
+      // เริ่มต้นที่ row 1 เนื่องจาก row 0 เป็น header
       var cellValue = data[row][col];
-      if (typeof cellValue === 'number' && !isNaN(cellValue)) { // ตรวจสอบว่าค่าเป็นตัวเลขและไม่ใช่ NaN
+      if (typeof cellValue === "number" && !isNaN(cellValue)) {
+        // ตรวจสอบว่าค่าเป็นตัวเลขและไม่ใช่ NaN
         sum += cellValue;
         count++;
       }
@@ -111,7 +118,7 @@ function getEvaluationData() {
 
   return {
     labels: evaluations,
-    averages: averages
+    averages: averages,
   };
 }
 
@@ -120,10 +127,11 @@ function getCountProblems() {
   var data = getSheetData();
   var problemData = [
     { type: "ไม่พบปัญหา", count: 0 },
-    { type: "พบปัญหา", count: 0 }
+    { type: "พบปัญหา", count: 0 },
   ];
 
-  for (var row = 1; row < data.length; row++) { // เริ่มที่ row 1 เนื่องจาก row 0 เป็น header
+  for (var row = 1; row < data.length; row++) {
+    // เริ่มที่ row 1 เนื่องจาก row 0 เป็น header
     var problemType = data[row][15]; // ดึงข้อมูลประเภทของปัญหาจากคอลัมน์แรก
     if (problemType === "พบปัญหา") {
       problemData[1].count++; // เพิ่มจำนวนปัญหา
@@ -140,9 +148,11 @@ function getProblemsData() {
   var data = getSheetData();
   var problems = {};
 
-  for (var row = 1; row < data.length; row++) { // เริ่มที่ row 1 เนื่องจาก row 0 เป็น header
+  for (var row = 1; row < data.length; row++) {
+    // เริ่มที่ row 1 เนื่องจาก row 0 เป็น header
     var problem = data[row][16]; // ดึงข้อมูลปัญหาจากคอลัมน์แรก
-    if (problem && problem !== " ") { // Check if the problem data is not empty
+    if (problem && problem !== " ") {
+      // Check if the problem data is not empty
       if (problems[problem]) {
         problems[problem]++;
       } else {
@@ -153,5 +163,27 @@ function getProblemsData() {
   return problems;
 }
 
+function getDataDashboard() {
+  const data = getSheetData("dashboard");
 
+  // Separate the header row (assuming headers are in the first row)
+  const headers = data.shift();
 
+  // Access data without headers
+  const dataWithoutHeaders = data;
+
+  // Access specific data point using column name (assuming headers exist)
+  const scoreIndex = headers.indexOf("คะแนน");
+  const nameIndex = headers.indexOf("ประเมินผลการปฏิบัติงาน"); 
+
+  if (nameIndex > -1) {
+    const nameValues = dataWithoutHeaders.map((row) => row[nameIndex]);
+    const scoreValues = dataWithoutHeaders.map((row) => row[scoreIndex]);
+    return {
+      labels: nameValues,
+      averages: scoreValues,
+    };
+  } else {
+    console.error("Header 'Name' not found");
+  }
+}

@@ -6,10 +6,10 @@ function getScriptUrl() {
 function doGet(e) {
   if (!e.parameter.page) {
     // When no specific page requested, return "home page"
-    return HtmlService.createTemplateFromFile('index').evaluate();
+    return HtmlService.createTemplateFromFile("index").evaluate();
   }
   // else, use page parameter to pick an html file from the script
-  return HtmlService.createTemplateFromFile(e.parameter['page']).evaluate();
+  return HtmlService.createTemplateFromFile(e.parameter["page"]).evaluate();
 }
 
 // Function to include HTML files
@@ -17,23 +17,24 @@ function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
 
-function getSheetData() {
+function getSheetData(sheetName) {
+  var name = sheetName ? sheetName : "Form Responses 1";
   try {
-    var sheet = SpreadsheetApp.openById('1qSpMNLfZIFT023d9BjdmVj54zFMAYpzDlRKbYF3M6bM').getSheetByName('Form Responses 1');
+    var sheet = SpreadsheetApp.openById(
+      "1qSpMNLfZIFT023d9BjdmVj54zFMAYpzDlRKbYF3M6bM"
+    ).getSheetByName(name);
     if (!sheet) {
-      throw new Error('Sheet not found');
+      throw new Error("Sheet not found");
     }
 
     var data = sheet.getDataRange().getValues();
     if (data.length === 0) {
-      throw new Error('No data found');
+      throw new Error("No data found");
     }
 
     return data;
   } catch (e) {
-    Logger.log('Error: ' + e.message);
+    Logger.log("Error: " + e.message);
     return [];
   }
 }
-
-
