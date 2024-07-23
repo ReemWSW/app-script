@@ -112,35 +112,16 @@
     }
   }
 
-  function renderProblemChart(problemData) {
-    // นับจำนวนของแต่ละประเภทของปัญหา
-    var rows = document.querySelectorAll('tbody tr');
-    rows.forEach(function (row) {
-      var cellValue = row.querySelector('td').innerText.trim();
-      if (cellValue === "พบปัญหา") {
-        problemData[1].count++;
-      } else {
-        problemData[0].count++;
-      }
-    });
-
-    // เตรียมข้อมูลสำหรับแสดงในแผนภูมิแท่ง
-    var labels = problemData.map(function (data) {
-      return data.type;
-    });
-    var counts = problemData.map(function (data) {
-      return data.count;
-    });
-
+  function renderProblemChart(data) {
     // สร้างแผนภูมิพาย
     var ctx = document.getElementById('problem-chart').getContext('2d');
     new Chart(ctx, {
       type: 'pie',
       data: {
-        labels: labels,
+        labels: data.labels,
         datasets: [{
           label: 'จำนวนของปัญหา',
-          data: counts,
+          data: data.counts,
           backgroundColor: [
             'rgba(54, 162, 235, 0.5)', // สีสำหรับประเภท "ไม่พบปัญหา"
             'rgba(255, 99, 132, 0.5)'   // สีสำหรับประเภท "พบปัญหา"

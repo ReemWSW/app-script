@@ -64,80 +64,120 @@ function getTeacherIntern() {
   const internshipCountIndex = headers.indexOf("จำนวนการนิเทศก์");
 
   if (nameIndex > -1 && internshipCountIndex > -1) {
-    const filteredData = dataWithoutHeaders.filter(row => row[internshipCountIndex] > 0);
-    const result = filteredData.map(row => {
+    const filteredData = dataWithoutHeaders.filter(
+      (row) => row[internshipCountIndex] > 0
+    );
+    const result = filteredData.map((row) => {
       return {
-        "ชื่อ": row[nameIndex],
-        "จำนวนการนิเทศก์": row[internshipCountIndex]
+        ชื่อ: row[nameIndex],
+        จำนวนการนิเทศก์: row[internshipCountIndex],
       };
     });
 
     // Get the maximum number of internships
-    const maxInternshipCount = Math.max(...dataWithoutHeaders.map(row => row[internshipCountIndex]));
+    const maxInternshipCount = Math.max(
+      ...dataWithoutHeaders.map((row) => row[internshipCountIndex])
+    );
 
     // Initialize counts for all numbers of internships from 0 to maxInternshipCount
     const internshipCounts = {};
-    for (let i = 0; i <= maxInternshipCount; i++) {
+    for (let i = 1; i <= maxInternshipCount; i++) {
       internshipCounts[i] = 0;
     }
 
     // Group and count teachers based on the number of internships
-    result.forEach(row => {
+    result.forEach((row) => {
       const count = row["จำนวนการนิเทศก์"];
       internshipCounts[count]++;
     });
 
-    console.log({
-      "internshipCounts": internshipCounts,
-      data: result
-    })
     return {
-      "internshipCounts": internshipCounts,
-      data: result
+      internshipCounts: internshipCounts,
+      data: result,
     };
   } else {
     console.error("Required headers not found");
   }
 }
 
-
-// Get count problem data
 function getCountProblems() {
-  var data = getSheetData();
-  var problemData = [
-    { type: "ไม่พบปัญหา", count: 0 },
-    { type: "พบปัญหา", count: 0 },
-  ];
+  const data = getSheetData("dashboard");
 
-  for (var row = 1; row < data.length; row++) {
-    // เริ่มที่ row 1 เนื่องจาก row 0 เป็น header
-    var problemType = data[row][15]; // ดึงข้อมูลประเภทของปัญหาจากคอลัมน์แรก
-    if (problemType === "พบปัญหา") {
-      problemData[1].count++; // เพิ่มจำนวนปัญหา
-    } else {
-      problemData[0].count++; // เพิ่มจำนวนไม่พบปัญหา
-    }
+  // Check if data is retrieved successfully
+  if (!data || data.length === 0) {
+    console.error("No data retrieved from the sheet");
+    return null;
   }
 
-  return problemData;
+  // Separate the header row (assuming headers are in the first row)
+  const headers = data.shift();
+
+  // Ensure headers are present
+  if (!headers || headers.length === 0) {
+    console.error("No headers found in the sheet");
+    return null;
+  }
+
+  // Access specific data points using column names
+  const problemIndex = headers.indexOf("ประเภท");
+  const problemCountIndex = headers.indexOf("จำนวนปัญหา");
+
+  // Ensure the necessary columns exist
+  if (problemIndex === -1 || problemCountIndex === -1) {
+    console.error("Required headers 'ประเภท' or 'จำนวนปัญหา' not found");
+    return null;
+  }
+
+  // Access data without headers
+  const dataWithoutHeaders = data;
+
+  // Filter out rows where the problem value is empty or null
+  const filteredData = dataWithoutHeaders.filter((row) => row[problemIndex]);
+
+  const problemValues = filteredData.map((row) => row[problemIndex]);
+  const problemCountValues = filteredData.map((row) => row[problemCountIndex]);
+
+  return {
+    labels: problemValues,
+    counts: problemCountValues,
+  };
 }
 
-// Get problem data
 function getProblemsData() {
-  var data = getSheetData();
-  var problems = {};
+  const data = getSheetData("dashboard");
 
-  for (var row = 1; row < data.length; row++) {
-    // เริ่มที่ row 1 เนื่องจาก row 0 เป็น header
-    var problem = data[row][16]; // ดึงข้อมูลปัญหาจากคอลัมน์แรก
-    if (problem && problem !== " ") {
-      // Check if the problem data is not empty
-      if (problems[problem]) {
-        problems[problem]++;
-      } else {
-        problems[problem] = 1;
-      }
-    }
+  // Separate the header row (assuming headers are in the first row)
+  const headers = data.shift();
+
+  // Ensure headers are present
+  if (!headers || headers.length === 0) {
+    console.error("No headers found in the sheet");
+    return null;
   }
-  return problems;
+
+  // Access specific data points using column names
+  const problemIndex = headers.indexOf("ปัญหาที่พบ");
+  const problemCountIndex = headers.indexOf("จำนวนที่พบ");
+
+  // Ensure the necessary columns exist
+  if (problemIndex === -1 || problemCountIndex === -1) {
+    console.error("Required headers 'ปัญหาที่พบ' or 'จำนวนที่พบ' not found");
+    return null;
+  }
+
+  // Access data without headers
+  const dataWithoutHeaders = data;
+
+  // Filter out rows where the problem value is empty or null
+  const filteredData = dataWithoutHeaders.filter(row => row[problemIndex]);
+
+  // Create an object with problems as keys and counts as values
+  const problemsData = {};
+  filteredData.forEach(row => {
+    const problem = row[problemIndex];
+    const count = row[problemCountIndex];
+    problemsData[problem] = count;
+  });
+
+  return problemsData;
 }
