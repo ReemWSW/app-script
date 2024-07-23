@@ -15,53 +15,53 @@
   }
 
   function loadTeachers() {
-    google.script.run.withSuccessHandler(renderTeachersChart).getUniqueTeachersWithCount();
+    google.script.run.withSuccessHandler(renderTeachersChart).getTeacherIntern();
   }
 
-function prepareChartData(teachersCount) {
-  const counts = Object.keys(teachersCount);
-  const teacherLengths = counts.map(count => teachersCount[count].length);
-  return { counts, teacherLengths };
-}
+  function prepareChartData(teachersCount) {
+    const counts = Object.keys(teachersCount);
+    const teacherLengths = counts.map(count => teachersCount[count].length);
+    return { counts, teacherLengths };
+  }
 
-  function renderTeachersChart(teachers) {
-    var teachersCount = teachers["teachersCountInverted"];
-  const counts = Object.keys(teachersCount);
-  const teacherLengths = counts.map(count => teachersCount[count].length);
+  function renderTeachersChart(data) {
+    var teachersCount = data["internshipCounts"];
+    const counts = Object.keys(teachersCount);
+    const teacherLengths = counts.map(count => teachersCount[count]);
 
-  if (document.getElementById('teacher-chart')) {
-    const ctx = document.getElementById('teacher-chart').getContext('2d');
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: counts,
-        datasets: [{
-          label: 'จำนวนครูออกนอเทศก์นักศึกษาฝึกอาชีพ',
-          data: teacherLengths,
-          backgroundColor: 'rgb(56, 193, 170)',
-        }],
-      },
-      options: {
-        responsive: true,
-        scales: {
-          x: {
-            title: {
-              display: true,
-              text: 'จำนวนครั้งที่ออกนอเทศ',
+    if (document.getElementById('teacher-chart')) {
+      const ctx = document.getElementById('teacher-chart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: counts,
+          datasets: [{
+            label: 'จำนวนครูออกนอเทศก์นักศึกษาฝึกอาชีพ',
+            data: teacherLengths,
+            backgroundColor: 'rgb(56, 193, 170)',
+          }],
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'จำนวนครั้งที่ออกนอเทศ',
+              },
             },
-          },
-          y: {
-            title: {
-              display: true,
-              text: 'จำนวนครู',
+            y: {
+              title: {
+                display: true,
+                text: 'จำนวนครู',
+              },
+              beginAtZero: true,
             },
-            beginAtZero: true,
           },
         },
-      },
-    });
+      });
+    }
   }
-}
 
 
   function displayCounts(counts) {
@@ -81,7 +81,7 @@ function prepareChartData(teachersCount) {
           labels: data.labels,
           datasets: [
             {
-              label : "ประเมินผลการปฏิบัติงาน",
+              label: "ประเมินผลการปฏิบัติงาน",
               borderColor: colorbar,
               backgroundColor: colorbar,
               data: data.averages,
@@ -164,7 +164,7 @@ function prepareChartData(teachersCount) {
 
   function renderProblemTable(problems) {
     var problemsData = problems;
-   var tableBody = document.getElementById('problem-table').getElementsByTagName('tbody')[0];
+    var tableBody = document.getElementById('problem-table').getElementsByTagName('tbody')[0];
 
     for (var problem in problemsData) {
       var problemCount = problemsData[problem];

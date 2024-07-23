@@ -1,4 +1,3 @@
-//------------------------------------ Get Data Unique --------------------------
 function getCount() {
   const data = getSheetData("dashboard");
 
@@ -27,7 +26,81 @@ function getCount() {
   }
 }
 
-// ------------------------------------------------------------------------------------------
+function getDataDashboard() {
+  const data = getSheetData("dashboard");
+
+  // Separate the header row (assuming headers are in the first row)
+  const headers = data.shift();
+
+  // Access data without headers
+  const dataWithoutHeaders = data;
+
+  // Access specific data point using column name (assuming headers exist)
+  const scoreIndex = headers.indexOf("คะแนน");
+  const nameIndex = headers.indexOf("ประเมินผลการปฏิบัติงาน");
+
+  if (nameIndex > -1) {
+    const nameValues = dataWithoutHeaders.map((row) => row[nameIndex]);
+    const scoreValues = dataWithoutHeaders.map((row) => row[scoreIndex]);
+    return {
+      labels: nameValues,
+      averages: scoreValues,
+    };
+  } else {
+    console.error("Header 'Name' not found");
+  }
+}
+
+function getTeacherIntern() {
+  const data = getSheetData("คุณครูนิเทศ");
+
+  // Separate the header row (assuming headers are in the first row)
+  const headers = data.shift();
+
+  // Access data without headers
+  const dataWithoutHeaders = data;
+  // Access specific data points using column names
+  const nameIndex = headers.indexOf("ชื่อ");
+  const internshipCountIndex = headers.indexOf("จำนวนการนิเทศก์");
+
+  if (nameIndex > -1 && internshipCountIndex > -1) {
+    const filteredData = dataWithoutHeaders.filter(row => row[internshipCountIndex] > 0);
+    const result = filteredData.map(row => {
+      return {
+        "ชื่อ": row[nameIndex],
+        "จำนวนการนิเทศก์": row[internshipCountIndex]
+      };
+    });
+
+    // Get the maximum number of internships
+    const maxInternshipCount = Math.max(...dataWithoutHeaders.map(row => row[internshipCountIndex]));
+
+    // Initialize counts for all numbers of internships from 0 to maxInternshipCount
+    const internshipCounts = {};
+    for (let i = 0; i <= maxInternshipCount; i++) {
+      internshipCounts[i] = 0;
+    }
+
+    // Group and count teachers based on the number of internships
+    result.forEach(row => {
+      const count = row["จำนวนการนิเทศก์"];
+      internshipCounts[count]++;
+    });
+
+    console.log({
+      "internshipCounts": internshipCounts,
+      data: result
+    })
+    return {
+      "internshipCounts": internshipCounts,
+      data: result
+    };
+  } else {
+    console.error("Required headers not found");
+  }
+}
+
+
 // Get count problem data
 function getCountProblems() {
   var data = getSheetData();
@@ -67,29 +140,4 @@ function getProblemsData() {
     }
   }
   return problems;
-}
-
-function getDataDashboard() {
-  const data = getSheetData("dashboard");
-
-  // Separate the header row (assuming headers are in the first row)
-  const headers = data.shift();
-
-  // Access data without headers
-  const dataWithoutHeaders = data;
-
-  // Access specific data point using column name (assuming headers exist)
-  const scoreIndex = headers.indexOf("คะแนน");
-  const nameIndex = headers.indexOf("ประเมินผลการปฏิบัติงาน");
-
-  if (nameIndex > -1) {
-    const nameValues = dataWithoutHeaders.map((row) => row[nameIndex]);
-    const scoreValues = dataWithoutHeaders.map((row) => row[scoreIndex]);
-    return {
-      labels: nameValues,
-      averages: scoreValues,
-    };
-  } else {
-    console.error("Header 'Name' not found");
-  }
 }
