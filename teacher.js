@@ -1,37 +1,41 @@
 function countStudentsPerMentor() {
-  var data = getSheetData();
-  if (data.length === 0) return [];
+  const data = getSheetData("คุณครูนิเทศ");
 
-  var result = {};
-  for (var i = 1; i < data.length; i++) {
-    var row = data[i];
-    var supervisor = row[2]; // Column index for "ครูนิเทศ"
+  const headers = data.shift();
+  console.log(headers)
+  const codeIndex = headers.indexOf("รหัส");
+  const nameIndex = headers.indexOf("ชื่อ");
+  const internshipCountIndex = headers.indexOf("จำนวนการนิเทศก์");
 
-    if (!result[supervisor]) {
-      result[supervisor] = {
-        count: 0,
-        students: [],
-      };
-    }
-    var studentDetails = {
-      name: row[3], // Assuming the 4th column is "ชื่อนักเรียน นักศึกษา"
-      id: row[4], // Assuming the 5th column is "รหัสประจำตัวนักเรียน นักศึกษา"
-      field: row[5], // Assuming the 6th column is "สาขาวิชา"
-      level: row[6], // Assuming the 7th column is "ระดับการศึกษา"
-      count: 1, // Initialize count
-    };
-
-    // Check if student already exists in the list
-    var existingStudent = result[supervisor].students.find(
-      (student) => student.name === studentDetails.name
+  if (nameIndex < -1 || internshipCountIndex < -1 || codeIndex < -1) {
+    console.error(
+      "Required headers 'รหัส' or 'ชื่อ' or 'จำนวนการนิเทศก์' not found"
     );
-    if (existingStudent) {
-      existingStudent.count += 1; // Increment count if student already exists
-    } else {
-      result[supervisor].students.push(studentDetails);
+  }
+
+  const dataWithoutHeaders = data;
+
+  // Create the JSON object to return
+  const result = {};
+  const filteredData = dataWithoutHeaders.filter(
+    (row) => row[internshipCountIndex] != 0
+  );
+
+  // Process the remaining rows of data
+  filteredData.forEach((row) => {
+    const code = row[codeIndex];
+    const name = row[nameIndex];
+    const internshipCount = row[internshipCountIndex];
+
+    if (!result[code]) {
+      result[code] = [];
     }
 
-    result[supervisor].count++;
-  }
+    result[code].push({
+      name: name,
+      internshipCount: internshipCount,
+    });
+  });
+
   return result;
 }

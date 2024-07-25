@@ -13,40 +13,18 @@
             table.clear();
 
             Object.keys(data).forEach(function (key) {
-                let studentDetails = JSON.stringify(data[key].students);
-                let buttonHtml = `<button class="btn btn-primary" onclick='showStudentDetails(${studentDetails});'>ดูนักเรียน</button>`;
-                table.row.add([key, data[key].name, data[key].count, buttonHtml]);
+                const name = data[key][0].name || 'N/A'; // Default to 'N/A' if not available
+                const count = data[key][0].count || 0; // Default to 0 if not available
+
+                // Add a row to the DataTable
+                table.row.add([key, name, count]);
             });
             table.draw();
         }).getEslab();
     }
-    function showStudentDetails(comp) {
-        if (!comp || comp.length === 0) {
-            console.log("ไม่มีข้อมูลนักเรียนสำหรับรหัสสถานประกอบการที่ระบุ");
-            return;
-        }
 
-
-        var table = $('#studentDetailsTable').DataTable();
-        table.clear();
-        comp.forEach(function (student) {
-            console.log(student);
-            table.row.add([
-                student.name,
-                student.id,
-                student.field,
-                student.level,
-                student.count,
-                student.teacher
-            ]);
-        });
-        table.draw();
-
-        $('#studentModal').modal('show'); // แสดง Modal เพื่อแสดงข้อมูลนักเรียน
-    }
     $(document).ready(function () {
         $('#compTable').DataTable();
-        $('#studentTable').DataTable();
         loadData();
     });
 </script>

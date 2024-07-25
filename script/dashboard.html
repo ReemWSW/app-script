@@ -1,4 +1,24 @@
 <script>
+  document.getElementById('captureButton').addEventListener('click', function() {
+            html2canvas(document.getElementById('capture')).then(function(canvas) {
+                // Convert the canvas to a data URL
+                var imgData = canvas.toDataURL('image/png');
+
+                // Create a temporary link element
+                var link = document.createElement('a');
+                link.href = imgData;
+                link.download = 'screenshot.png';
+
+                // Trigger the download
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link); // Remove the link after download
+            });
+        });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script>
   function loadCounts() {
     google.script.run.withSuccessHandler(displayCounts).getCount();
   }
@@ -164,12 +184,14 @@
     }
   }
 
-  window.onload = () => {
+   window.onload = () => {
     loadEvaluationData();
     loadCounts();
     loadProblemCharData();
     loadProblemData();
     loadTeachers();
   };
+
+  
 
 </script>

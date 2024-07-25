@@ -1,5 +1,5 @@
 <script>
-    function loadData() {
+  function loadData() {
         $("#loadingSpinner").show();
         google.script.run.withSuccessHandler(function (data) {
             $("#loadingSpinner").hide();
@@ -8,101 +8,27 @@
                 console.error("Loading Data is not valid.");
                 return;
             }
-
+console.log(data)
             var table = $('#mentorTable').DataTable();
             table.clear();
 
+            // Iterate over each key in the data object
             Object.keys(data).forEach(function (key) {
-                let studentDetails = JSON.stringify(data[key].students);
-                let buttonHtml = `<button class="btn btn-primary" onclick='showStudentDetails(${studentDetails});'>ดูนักเรียน</button>`;
-                table.row.add([key, data[key].count, buttonHtml]);
+                // Access properties for each item in the data
+                const name = data[key][0].name || 'N/A'; // Default to 'N/A' if not available
+                const internshipCount = data[key][0].internshipCount || 0; // Default to 0 if not available
+
+                // Add a row to the DataTable
+                table.row.add([key, name, internshipCount]);
             });
+
+            // Redraw the table to reflect the changes
             table.draw();
         }).countStudentsPerMentor();
     }
 
-    function showStudentDetails(students) {
-        if (!students || students.length === 0) {
-            console.log("ไม่มีข้อมูลนักเรียนสำหรับครูนิเทศที่ระบุ");
-            return;
-        }
-
-
-        var table = $('#studentDetailsTable').DataTable();
-        table.clear();
-        students.forEach(function (student) {
-            console.log(student);
-            table.row.add([student.name, student.id, student.field, student.level, student.count]);
-        });
-        table.draw();
-
-        $('#studentModal').modal('show'); // แสดง Modal เพื่อแสดงข้อมูลนักเรียน
-    }
-
-
-
     $(document).ready(function () {
         $('#mentorTable').DataTable();
-        $('#studentTable').DataTable();
         loadData();
     });
 </script>
-
-
-
-<!-- <script>
-    function loadData() {
-        $("#loadingSpinner").show();
-        google.script.run.withSuccessHandler(function (data) {
-            $("#loadingSpinner").hide();
-
-            if (!Array.isArray(data) || data.length === 0) {
-                console.error("Loding Data is not valid.");
-                return;
-            }
-
-            var table = $('#mentorTable').DataTable();
-            table.clear();
-
-            data.forEach(function (row) {
-                let buttonHtml = `<button class="btn btn-primary" onclick="console.log(\'Hello\');">ดูนักเรียน</button>`;
-                // let buttonHtml = `<button class="btn btn-primary" onclick="showStudentDetails('${row[0]}');">ดูนักเรียน</button>`;
-                table.row.add([row[0], row[1], buttonHtml]);
-            });
-            table.draw();
-        }).countStudentsPerMentor();
-    }
-
-    // function showStudentDetails(mentor) {
-    //     $("#modalLoadingSpinner").show(); // แสดง Spinner หรือสัญลักษณ์บอกว่ากำลังโหลด
-
-    //     // เรียกใช้งาน Google Apps Script ผ่าน google.script.run
-    //     google.script.run.withSuccessHandler(function (data) {
-    //         $("#modalLoadingSpinner").hide(); // ซ่อน Spinner เมื่อโหลดเสร็จสิ้น
-    //         console.log(data);
-
-
-    //         // if (data === null || data.length === 0) {
-    //         //     console.log("ไม่มีข้อมูลนักเรียนสำหรับครูนิเทศที่ระบุ");
-    //         //     return;
-    //         // }
-
-
-    //         // var table = $('#studentTable').DataTable();
-    //         // table.clear();
-    //         // data.forEach(function (row) {
-    //         //     table.row.add(row);
-    //         // });
-    //         // table.draw();
-
-    //         // $('#studentModal').modal('show'); // แสดง Modal เพื่อแสดงข้อมูลนักเรียน
-    //     }).getStudentDetailsByMentor(mentor); // เรียกใช้งาน getStudentDetailsByMentor ใน Google Apps Script
-    // }
-
-
-    $(document).ready(function () {
-        $('#mentorTable').DataTable();
-        $('#studentTable').DataTable();
-        loadData();
-    });
-</script> -->
